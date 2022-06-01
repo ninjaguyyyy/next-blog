@@ -16,7 +16,13 @@ export default NextAuth({
         if (!user) {
           throw new Error(ERROR_MESSAGES.INVALID_CREDENTIAL);
         }
+
         if (!await verifyPassword(password, user.password)) throw new Error(ERROR_MESSAGES.INVALID_CREDENTIAL);
+
+        if (!user.emailVerifiedAt) {
+          throw new Error(ERROR_MESSAGES.ACCOUNT_NOT_VERIFY);
+        }
+        
         return { email: user.email, name: user.name, roles: await getRoleNamesByUserId(user.id) };
       }
     })
